@@ -33,6 +33,14 @@ html, body {
 
 .menu{
     max-width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.menuGridXY{
+    margin-bottom: 20px;
 }
 
 .etchASketch{
@@ -47,4 +55,24 @@ html, body {
 
 #inputGridXY{
     accent-color: crimson;
+}
+
+.rounded{
+    height: 50px;
+    width:50px;
+    border-radius: 50px;
+    border: 1px solid black;
+    overflow: hidden;
+}
+
+#inputBrushColor{
+    border: 0;
+    padding: 0;
+    margin:-5px;
+    width: 60px;
+    height:60px;
+}
+
+#brushMode{
+    margin-bottom: 20px;
 }

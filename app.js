@@ -1,7 +1,29 @@
+// Declaration of default values.
+// Initialy everything declared in main, but was too much of a hasstle.
+// Kept only GridXY that way, since it already worked...
 let mouseHold =false;
+let brushColor = "black";
+let brushMode = 0;
+let brushModeText;
+
+switch(brushMode){
+    case 0:
+        brushModeText="Plain Color";
+        break;
+    case 1:
+        brushModeText="Gradient Mode";
+        break;
+    case 2:
+        brushModeText="Rainbow Mode";
+        break;
+};
+
+//----------------------------------------
+//  Functions
+//----------------------------------------
 
 // Setup Menu options
-function setupMenu(gridXY,brushMode,brushColor){
+function setupMenu(gridXY){
     const body=document.querySelector("body");
 
 //---
@@ -57,17 +79,54 @@ function setupMenu(gridXY,brushMode,brushColor){
     inputGridXY.addEventListener("change",()=>{
         gridXY=inputGridXY.value;
         lblGridXY.textContent=`Grid size: ${gridXY}x${gridXY}`;
-        setupGrid(gridXY,brushColor);
+        setupGrid(gridXY);
     });
     menuGridXY.appendChild(inputGridXY);
 
     // Create a button for brushMode
+    const btnBrushMode = document.createElement("button");
+    btnBrushMode.textContent=brushModeText;
+    btnBrushMode.setAttribute("id","brushMode");
+    btnBrushMode.addEventListener('click', ()=>{
+        switch(brushMode){
+            case 0:
+                brushMode=1;
+                brushModeText="Rainbow Mode";
+                break;
+            case 1:
+                brushMode=2;
+                brushModeText="Gradient Mode";
+                break;
+            case 2:
+                brushMode=0;
+                brushModeText="Plain Color";
+                break;
+        };
+        btnBrushMode.textContent=brushModeText;
+    });
+    menuDiv.appendChild(btnBrushMode);
+
 
     // Create a button for brushColor
+    //<input type="color" id="favcolor" name="favcolor" value="#ff0000">
+    const colorDiv = document.createElement("div");
+    colorDiv.setAttribute("class","rounded");
+    colorDiv.style.backgroundColor=brushColor;
+    menuDiv.appendChild(colorDiv);
+    const inputBrushColor = document.createElement("input");
+    inputBrushColor.setAttribute("type","color");
+    inputBrushColor.setAttribute("id","inputBrushColor");
+    inputBrushColor.setAttribute("value",brushColor);
+    inputBrushColor.addEventListener("change", () =>{
+        brushColor=inputBrushColor.value;
+        colorDiv.style.backgroundColor=brushColor;
+    })
+    colorDiv.appendChild(inputBrushColor);
+
 }
 
 // Create a grid
-function setupGrid(gridXY,brushColor){
+function setupGrid(gridXY){
     const appContainer= document.querySelector(".appContainer");
 
     //clears grid if exists.
@@ -79,13 +138,13 @@ function setupGrid(gridXY,brushColor){
     //Events
     etchASketch.addEventListener('mousedown', (e)=>{
         mouseHold=true;
-        colorGrid(e.target,brushColor);
+        colorGrid(e.target);
     });
     etchASketch.addEventListener('mouseup', (e)=>{
         mouseHold=false;
     });
     etchASketch.addEventListener("mouseover", (e) => {
-        colorGrid(e.target,brushColor);
+        colorGrid(e.target);
     });
 
     appContainer.appendChild(etchASketch);
@@ -103,31 +162,42 @@ function setupGrid(gridXY,brushColor){
 
 }
 
-function colorGrid(grid,brushColor){
+function colorGrid(grid){
     if(mouseHold==true && grid.getAttribute("class")=="gridPixel"){
-    grid.style.backgroundColor=brushColor;
+        if(brushMode==0){
+            grid.style.backgroundColor=brushColor;
+        }
+        else if(brushMode==1){
+            grid.style.backgroundColor=randomColor();
+        }
+        else{
+
+            grid.style.backgroundColor=brushColor;
+            if(!grid.style.opacity){
+                grid.style.opacity='0.1';
+            }
+            else if(grid.style.opacity<1){
+                grid.style.opacity=parseFloat(grid.style.opacity)+0.1;
+            }
+            console.log(grid.style.opacity);
+        }
     }
 }
 
-// Define the brush size
+function randomColor(){
+    const randR = Math.floor(Math.random()*255);
+    const randG = Math.floor(Math.random()*255);
+    const randB = Math.floor(Math.random()*255);
 
-// Define the brush mode
-// Default: click and paint
-// Option: Move and paint
-// Option: Erase Mode
-
-// Define the brush color
-// Default: chosen colour
-// Option: opacity - click to increase 10%
-
-
+    return `rgb(${randR},${randG},${randB})`;
+}
 
 // Main application - 
-function main(gridXY=16,brushMode=0,brushColor="black"){
+function main(gridXY=16){
     // Populate Menu with all the defined variables
-    setupMenu(gridXY,brushMode,brushColor);
+    setupMenu(gridXY);
     // Draw the grid.
-    setupGrid(gridXY,brushColor);
+    setupGrid(gridXY);
 }
 
 main();
