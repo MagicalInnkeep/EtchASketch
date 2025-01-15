@@ -53,6 +53,12 @@ function setupMenu(gridXY,brushMode,brushColor){
     inputGridXY.setAttribute("id","inputGridXY");
     inputGridXY.setAttribute("min","1");
     inputGridXY.setAttribute("max","64");
+    inputGridXY.value=gridXY;
+    inputGridXY.addEventListener("change",()=>{
+        gridXY=inputGridXY.value;
+        lblGridXY.textContent=`Grid size: ${gridXY}x${gridXY}`;
+        setupGrid(gridXY,brushColor);
+    });
     menuGridXY.appendChild(inputGridXY);
 
     // Create a button for brushMode
@@ -63,6 +69,10 @@ function setupMenu(gridXY,brushMode,brushColor){
 // Create a grid
 function setupGrid(gridXY,brushColor){
     const appContainer= document.querySelector(".appContainer");
+
+    //clears grid if exists.
+    const gridExists = document.querySelector(".etchASketch");
+    if(gridExists!=null){appContainer.removeChild(gridExists);};
 
     const etchASketch = document.createElement("div");
     etchASketch.setAttribute("class","etchASketch");
@@ -80,9 +90,11 @@ function setupGrid(gridXY,brushColor){
 
     appContainer.appendChild(etchASketch);
 
+
     for(var i=0;i < gridXY; i++){
         for(var j=0; j<gridXY; j++){
             const divGrid = document.createElement("div");
+            divGrid.setAttribute("class","gridPixel");
             divGrid.setAttribute("id",`grid${i}x${j}`);
             divGrid.setAttribute("style","height:"+100/gridXY+"%;width:"+100/gridXY+"%;");
             etchASketch.appendChild(divGrid);
@@ -92,11 +104,10 @@ function setupGrid(gridXY,brushColor){
 }
 
 function colorGrid(grid,brushColor){
-    if(mouseHold==true){
+    if(mouseHold==true && grid.getAttribute("class")=="gridPixel"){
     grid.style.backgroundColor=brushColor;
     }
 }
-// Clean the grid
 
 // Define the brush size
 
