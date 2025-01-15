@@ -1,3 +1,5 @@
+let mouseHold =false;
+
 // Setup Menu options
 function setupMenu(gridXY,brushMode,brushColor){
     const body=document.querySelector("body");
@@ -16,7 +18,7 @@ function setupMenu(gridXY,brushMode,brushColor){
     container.appendChild(headerDiv);
     const header1 = document.createElement("h1");
     header1.setAttribute("class","mainHeader");
-    header1.textContent="Etch-a-Sketch"
+    header1.textContent="Etch-a-Sketch";
     headerDiv.appendChild(header1);
 
 //---
@@ -64,6 +66,18 @@ function setupGrid(gridXY,brushColor){
 
     const etchASketch = document.createElement("div");
     etchASketch.setAttribute("class","etchASketch");
+    //Events
+    etchASketch.addEventListener('mousedown', (e)=>{
+        mouseHold=true;
+        colorGrid(e.target,brushColor);
+    });
+    etchASketch.addEventListener('mouseup', (e)=>{
+        mouseHold=false;
+    });
+    etchASketch.addEventListener("mouseover", (e) => {
+        colorGrid(e.target,brushColor);
+    });
+
     appContainer.appendChild(etchASketch);
 
     for(var i=0;i < gridXY; i++){
@@ -71,18 +85,16 @@ function setupGrid(gridXY,brushColor){
             const divGrid = document.createElement("div");
             divGrid.setAttribute("id",`grid${i}x${j}`);
             divGrid.setAttribute("style","height:"+100/gridXY+"%;width:"+100/gridXY+"%;");
-            divGrid.addEventListener("click",() =>{
-                colorGrid(gridXY, divGrid, brushColor);
-            });
             etchASketch.appendChild(divGrid);
         }
     }
 
 }
 
-function colorGrid(gridXY, divGrid, brushColor){
-    console.log(divGrid.id+" and color "+brushColor);
-    divGrid.setAttribute("style","height:"+100/gridXY+"%;width:"+100/gridXY+"%;background-color:"+brushColor+";");
+function colorGrid(grid,brushColor){
+    if(mouseHold==true){
+    grid.style.backgroundColor=brushColor;
+    }
 }
 // Clean the grid
 
